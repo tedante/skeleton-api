@@ -3,45 +3,40 @@
 namespace App\Repositories;
 
 use App\Models\User;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class UserRepository {
 
     protected $model;
-    
-    protected $searchable = [];
 
     public function __construct(User $model) {
         $this->model = $model;
     }
 
-    public function get($limit = 15, array $columns = ['*'], array $filters = [], array $include = [], $orderBy = "created_at", $orderType = "asc") {
-        $data =  $this
-                    ->model::query();
-        
-        // if (isset($filters)) {
-        //     foreach($filters as $key => $value) {
-        //         $filters = explode(",", $value);
-                
-        //         foreach ($filters as $item) {
-        //             $data = $data->where($key, 'like', "%".$item."%");
-        //         }
-        //     }
-        // }
+    public function get($limit = 15, array $columns = ['*'], array $filters = [], array $includes = [], $sort = ["created_at"]) {
+        $data = QueryBuilder::for(User::class)
+                                ->allowedFields($columns)
+                                ->allowedFilters($filters)
+                                ->allowedIncludes($includes)
+                                ->allowedSorts($sort)
+                                ->paginate(
+                                    $limit,
+                                    $columns
+                                );
 
-        $data = $data
-                    ->orderBy($orderBy, $orderType)
-                    ->paginate(
-                        $limit,
-                        $columns
-                    );
-        
         return $data;
     }
 
-    public function getById($id, $columns = ['*']) {
-        return $this
-                ->model
-                ->find($id, $columns);
+    public function getById($id, $columns = ['*'], array $includes = []) {
+        $data = QueryBuilder::for(User::class)
+                                ->allowedFields($columns)
+                                ->allowedIncludes($includes)
+                                ->find(
+                                    $id,
+                                    $columns
+                                );
+
+        return $data;
     }
 
     public function save($data) {

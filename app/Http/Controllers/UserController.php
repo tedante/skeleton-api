@@ -7,27 +7,29 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Utils\Response;
 use Exception;
-use App\Repositories\UserRepository;
+use App\Services\UserService;
 
 class UserController extends Controller {
 
     use Response;
 
-    protected $repository;
+    protected $service;
 
-    public function __construct(UserRepository $repository)
+    public function __construct(UserService $service)
     {
-        $this->repository = $repository;
+        $this->service = $service;
     }
 
     public function index(Request $request) {
+        // dd($request->query(), $request->query()["fields"]);
+        
         try {
-            $data = $this->repository->get();
+            $data = $this->service->get($request->query());
 
             return $this->responseSuccess($data);
         } catch (\Throwable $th) {
             throw $th;
         }
     }
-    
+
 }
