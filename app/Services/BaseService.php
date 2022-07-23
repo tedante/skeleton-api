@@ -22,6 +22,33 @@ class BaseService {
         return $data;
     }
 
+    public function store($newData) {
+        $data = $this->repository->save($newData);
+
+        return $data;
+    }
+
+    public function getById($id, $query = []) {
+        $columns = $this->getColumns($query); // ?fields[users]=id,name
+        $includes = $this->getIncludes($query); // ?include=categories
+
+        $data = $this->repository->getById($id, $columns, $includes);
+
+        return $data;
+    }
+
+    public function update($id, $updateData) {
+        $data = $this->repository->update($id, $updateData);
+
+        return $data;
+    }
+
+    public function delete($id) {
+        $data = $this->repository->delete($id);
+
+        return $data;
+    }
+
     public function getColumns($query) {
         if (isset($query["fields"]["users"])) {
             $columns = explode(",", $query["fields"]["users"]);

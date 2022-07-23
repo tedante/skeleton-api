@@ -42,31 +42,23 @@ class BaseRepository implements RepositoryInterface {
     public function save($data) {
         $model = new $this->model;
 
-        $model->title = $data['title'];
-        $model->description = $data['description'];
+        $result = $model::create($data);
 
-        $model->save();
-
-        return $model->fresh();
+        return $result;
     }
 
     public function update($data, $id) {
-        
-        $model = $this->model->find($id);
+        $result = $this->model->find($id);
 
-        $model->title = $data['title'];
-        $model->description = $data['description'];
+        $result->update($data);
 
-        $model->update();
-
-        return $model;
+        return $result;
     }
 
     public function delete($id) {
-        
-        $model = $this->model->find($id);
-        $model->delete();
+        $result = $this->model->find($id);
+        $result->delete();
 
-        return $model;
+        return $result;
     }
 }
