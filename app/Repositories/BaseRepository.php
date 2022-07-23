@@ -47,8 +47,10 @@ class BaseRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function update($data, $id) {
+    public function update($id, $data) {
         $result = $this->model->find($id);
+        
+        if (!$result) return null;
 
         $result->update($data);
 
@@ -57,6 +59,9 @@ class BaseRepository implements RepositoryInterface {
 
     public function delete($id) {
         $result = $this->model->find($id);
+        
+        if (!$result) return null;
+        
         $result->delete();
 
         return $result;
